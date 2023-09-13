@@ -1,39 +1,21 @@
 import styled from "styled-components";
 import { Pokemon } from "../types";
+import { Link } from "react-router-dom";
+import "../App.scss";
 
-const ItemBox = styled.div`
-  a {
-    display: block;
-    color: inherit;
-    text-decoration: none;
-    text-align: center;
-    background-color: beige;
-    border-radius: 10px;
-    padding: 1rem;
-  }
-  h2 {
-    color: #333;
-    font-size: 1.25rem;
-    text-transform: capitalize;
-  }
-  p {
-    margin: 0;
-    line-height: 1.5;
-    margin-top: 0.5rem;
-    white-space: normal;
-  }
-`;
-
-export default function PokemonItem({ sprites, name, types }: Pokemon) {
+export default function PokemonItem({ sprites, name, types, id }: Pokemon) {
   return (
-    <ItemBox>
-      <a href="">
-        <div className="img">
-          <img src={sprites.front_default} alt={name} />
-        </div>
-        <h2>{name}</h2>
-        <span>{types.name}</span>
-      </a>
-    </ItemBox>
+    <Link to={`/${name}`} className="card">
+      <span className="num">No.{id}</span>
+      <div className="img">
+        <img src={sprites.front_default} alt={name} />
+      </div>
+      <h2>{name}</h2>
+      {types.map((type: any) => (
+        <span className={`type ${type.type.name}`} key={type.slot}>
+          {type.type.name}
+        </span>
+      ))}
+    </Link>
   );
 }

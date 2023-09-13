@@ -4,13 +4,13 @@ import styled from "styled-components";
 import { Pokemon } from "../types";
 import PokemonItem from "./PokemonItem";
 
-const ListWrap = styled.div`
+const ListWrap = styled.ul`
   display: flex;
   flex-wrap: wrap;
 
   margin: 2rem auto;
 
-  > div {
+  > li {
     width: calc((100% - 4rem) / 5);
     margin-right: 1rem;
     margin-bottom: 1rem;
@@ -23,14 +23,12 @@ const ListWrap = styled.div`
 
 export default function PokemonList() {
   const [pokemonData, setPokemonData] = useState<Pokemon[]>([]);
-  const [loading, setLoading] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
     async function fetchData(): Promise<void> {
       const allPokemonData = [];
       for (let i = 1; i <= 10; i++) {
-        setLoading(true);
-
         const response = await axios.get(
           `https://pokeapi.co/api/v2/pokemon/${i}`
         );
@@ -54,13 +52,15 @@ export default function PokemonList() {
       ) : (
         <ListWrap>
           {pokemonData.map((pokemon: Pokemon) => (
-            <PokemonItem
-              key={pokemon.id}
-              id={pokemon.id}
-              name={pokemon.name}
-              sprites={pokemon.sprites}
-              types={pokemon.types[0].type}
-            />
+            <li>
+              <PokemonItem
+                key={pokemon.id}
+                id={pokemon.id}
+                name={pokemon.name}
+                sprites={pokemon.sprites}
+                types={pokemon.types}
+              />
+            </li>
           ))}
         </ListWrap>
       )}
