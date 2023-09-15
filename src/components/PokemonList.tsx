@@ -3,6 +3,9 @@ import { useEffect, useState } from "react";
 import styled from "styled-components";
 import { Pokemon } from "../types";
 import PokemonItem from "./PokemonItem";
+import { useQuery } from "@tanstack/react-query";
+import { getAll, getInfo } from "../api";
+import { useParams } from "react-router-dom";
 
 const ListWrap = styled.ul`
   display: flex;
@@ -23,38 +26,36 @@ const ListWrap = styled.ul`
 
 export default function PokemonList() {
   const [pokemonData, setPokemonData] = useState<Pokemon[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
+  const { isLoading, data } = useQuery<any>(["allPokemon"], getAll);
+
+  // const { isLoading, data } = useQuery(["Pokemon", pokemonId], () =>
+  //   getInfo(`${pokemonId}`)
+  // );
 
   useEffect(() => {
     async function fetchData(): Promise<void> {
-      const allPokemonData = [];
-      for (let i = 1; i <= 10; i++) {
+      for (let i = 1; i <= data?.length; i++) {
         const response = await axios.get(
           `https://pokeapi.co/api/v2/pokemon/${i}`
         );
-
-        allPokemonData.push({ ...response.data });
-        setPokemonData(allPokemonData);
-
-        setLoading(false);
+        setPokemonData(response.data);
       }
     }
 
     fetchData();
-  }, []);
+  }, [isLoading]);
 
   console.log(pokemonData);
 
   return (
     <div>
-      {loading ? (
+      {isLoading ? (
         "Loading..."
       ) : (
         <ListWrap>
           {pokemonData.map((pokemon: Pokemon) => (
-            <li>
+            <li key={pokemon.id}>
               <PokemonItem
-                key={pokemon.id}
                 id={pokemon.id}
                 name={pokemon.name}
                 sprites={pokemon.sprites}
