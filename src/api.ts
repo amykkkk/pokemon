@@ -12,6 +12,6 @@ export const getAll = async (/*{ pageParam = 0 }*/) => {
     .then((res) => res.data.results);
 };
 
-export const getInfo = async (num: number) => {
+export const getInfo = async (num: number | string) => {
   return await axios.get(`${BASE_URL}/pokemon/${num}`).then((res) => res.data);
 };

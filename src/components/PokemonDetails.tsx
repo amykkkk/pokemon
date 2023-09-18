@@ -1,47 +1,32 @@
-import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-import { Pokemon } from "../types";
-import axios from "axios";
+import { useParams, Link } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
+import { getInfo } from "../api";
 import "../App.scss";
-import { Link } from "react-router-dom";
 
 export default function PokemonDetails() {
   const { name } = useParams<{ name: string }>();
-  const [pokemonData, setPokemonData] = useState<any>([]);
-  const [loading, setLoading] = useState<boolean>(true);
-
-  useEffect(() => {
-    async function fetchData(): Promise<void> {
-      const response = await axios.get(
-        `https://pokeapi.co/api/v2/pokemon/${name}`
-      );
-      setPokemonData(response.data);
-      setLoading(false);
-    }
-    fetchData();
-  }, []);
-  console.log(pokemonData.id);
+  const { isLoading, data } = useQuery<any>(["pokemonInfo", name], () =>
+    getInfo(`${name}`)
+  );
 
   return (
     <div>
-      {loading ? (
+      {isLoading ? (
         "Loading..."
       ) : (
         <div className="card">
           <div className="img">
             <img
               src={
-                pokemonData["sprites"]["other"]["official-artwork"][
-                  "front_default"
-                ]
+                data["sprites"]["other"]["official-artwork"]["front_default"]
               }
               alt={name}
             />
           </div>
           <h2>{name}</h2>
-          <p>height: {pokemonData.height}</p>
-          <p>weight: {pokemonData.weight}</p>
-          {pokemonData.types.map((type: any) => (
+          <p>height: {data.height}</p>
+          <p>weight: {data.weight}</p>
+          {data.types.map((type: any) => (
             <Link
               className={`type ${type.type.name}`}
               key={type.slot}
@@ -52,13 +37,13 @@ export default function PokemonDetails() {
           ))}
 
           <br />
-          {pokemonData.abilities.map((power: any) => (
+          {data.abilities.map((power: any) => (
             <Link className="type" key={power.slot} to={power.ability.url}>
               {power.ability.name}
             </Link>
           ))}
           <ul>
-            {pokemonData.stats.map((stats: any, index: number) => (
+            {data.stats.map((stats: any, index: number) => (
               <li key={index}>
                 {stats.stat.name} <span>{stats.base_stat}</span>
               </li>

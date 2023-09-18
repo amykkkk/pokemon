@@ -28,24 +28,18 @@ export default function PokemonList() {
   const [pokemonData, setPokemonData] = useState<Pokemon[]>([]);
   const { isLoading, data } = useQuery<any>(["allPokemon"], getAll);
 
-  // const { isLoading, data } = useQuery(["Pokemon", pokemonId], () =>
-  //   getInfo(`${pokemonId}`)
-  // );
-
   useEffect(() => {
-    async function fetchData(): Promise<void> {
+    async function fetchData() {
+      const pokemonAll: any = [];
       for (let i = 1; i <= data?.length; i++) {
-        const response = await axios.get(
-          `https://pokeapi.co/api/v2/pokemon/${i}`
-        );
-        setPokemonData(response.data);
+        const response = await getInfo(i);
+        pokemonAll.push(response);
       }
+      setPokemonData(pokemonAll);
     }
 
     fetchData();
   }, [isLoading]);
-
-  console.log(pokemonData);
 
   return (
     <div>
@@ -53,8 +47,8 @@ export default function PokemonList() {
         "Loading..."
       ) : (
         <ListWrap>
-          {pokemonData.map((pokemon: Pokemon) => (
-            <li key={pokemon.id}>
+          {pokemonData.map((pokemon: Pokemon, index: number) => (
+            <li key={index}>
               <PokemonItem
                 id={pokemon.id}
                 name={pokemon.name}
