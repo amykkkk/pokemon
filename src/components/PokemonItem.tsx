@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { Pokemon } from "../types";
+import { Pokemon } from "../type/types";
 import { Link } from "react-router-dom";
 import "../App.scss";
 

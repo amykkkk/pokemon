@@ -1,11 +1,10 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import styled from "styled-components";
-import { Pokemon } from "../types";
-import PokemonItem from "./PokemonItem";
+import { Pokemon } from "../type/types";
+import PokemonItem from "../components/PokemonItem";
 import { useQuery } from "@tanstack/react-query";
 import { getAll, getInfo } from "../api";
-import { useParams } from "react-router-dom";
 
 const ListWrap = styled.ul`
   display: flex;

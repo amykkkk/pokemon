@@ -1,5 +1,9 @@
 body {
-  background: beige;
+  background: #f5f5f9;
+  color: #697a8d;
+}
+* {
+  box-sizing: border-box;
 }
 a {
   color: inherit;
@@ -25,13 +29,25 @@ li {
   margin: 0;
 }
 
+.container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  width: 100%;
+  padding-top: 1.625rem;
+  padding-bottom: 1.625rem;
+}
+
 .card {
-  background-color: #effdff;
+  width: 100%;
+  max-width: 400px;
+  background-color: #fff;
   border-radius: 10px;
-  padding: 1rem;
+  padding: 1.5rem;
   text-align: center;
   box-sizing: border-box;
-  box-shadow: 1px 1px 4px 0px gray;
+  box-shadow: 0 2px 6px 0 rgba(67, 89, 113, 0.12);
 }
 
 .num {
@@ -72,5 +88,92 @@ li {
   }
   &.posison {
     background: #994dcf;
+  }
+}
+
+.logo {
+  margin-bottom: 2.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  line-height: 1;
+  min-height: 1px;
+}
+
+.form-label {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: inherit;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  color: #566a7f;
+  display: inline-block;
+  text-align: left;
+}
+
+.form-wrap {
+  text-align: left;
+  margin-bottom: 1rem;
+}
+input {
+  display: block;
+  width: 100%;
+  padding: 0.4375rem 0.875rem;
+  font-size: 0.9375rem;
+  font-weight: 400;
+  line-height: 1.53;
+  color: #697a8d;
+  background-color: #fff;
+  background-clip: padding-box;
+  border: 1px solid #d9dee3;
+  appearance: none;
+  border-radius: 0.375rem;
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+
+  &::placeholder {
+    color: #b4bdc6;
+    opacity: 0.6;
+  }
+}
+
+button {
+  width: 100%;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.735rem 1.25rem;
+  font-size: 0.9375rem;
+  font-weight: 400;
+  border-radius: 0.375rem;
+  border: 0;
+  margin-bottom: 1rem;
+
+  &.btn-primary {
+    color: #fff;
+    background-color: #696cff;
+    border-color: #696cff;
+    box-shadow: 0 0.125rem 0.25rem 0 rgba(105, 108, 255, 0.4);
+  }
+}
+
+.pw-box {
+  position: relative;
+
+  input {
+    padding-right: 2rem;
+  }
+
+  .pw-icon {
+    cursor: pointer;
+    position: absolute;
+    top: 32%;
+    right: 1rem;
+    font-size: 1rem;
+    font-weight: 400;
+    color: #697a8d;
+    text-align: center;
+    white-space: nowrap;
   }
 }
