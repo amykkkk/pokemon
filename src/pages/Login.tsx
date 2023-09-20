@@ -1,20 +1,54 @@
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import imgLogo from "../img/logo.png";
 import { AiOutlineEyeInvisible } from "react-icons/ai";
 import { useNavigate } from "react-router-dom";
+import InputBox from "../components/InputBox";
 
 export default function Login() {
-  const [inputId, setInputId] = useState("");
-  const [inputPw, setInputPw] = useState("");
-  const [button, setButton] = useState(true);
+  const [inputId, setInputId] = useState<string>("");
+  const [inputPw, setInputPw] = useState<string>("");
   const navigate = useNavigate();
 
-  // 유효성 검사
-  const changeButton = () => {
-    inputId.includes("@") && inputPw.length >= 8
-      ? setButton(false)
-      : setButton(true);
-  };
+  // input value
+  const [form, setForm] = useState({
+    email: "",
+    password: "",
+  });
+
+  const [ErrMsg, setErrMsg] = useState({
+    emailMessage: "",
+    pwMessage: "",
+  });
+
+  useEffect(() => {
+    const idReg = /^[A-za-z0-9]{5,15}$/;
+    if (idReg.test(form.email) || form.email === "") {
+      setErrMsg({
+        ...ErrMsg,
+        emailMessage: "",
+      });
+    } else {
+      setErrMsg({
+        ...ErrMsg,
+        emailMessage: "아이디는 영문 또는 숫자로 5~15자 이여야 합니다.",
+      });
+    }
+  }, [form.email]);
+
+  useEffect(() => {
+    const pwdReg = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
+    if (pwdReg.test(form.password) || form.password === "") {
+      setErrMsg({
+        ...ErrMsg,
+        pwMessage: "",
+      });
+    } else {
+      setErrMsg({
+        ...ErrMsg,
+        pwMessage: "비밀번호는 문자 또는 숫자로 8자 이상이여야 합니다.",
+      });
+    }
+  }, [form.password]);
 
   // submit
   const loginFunc = (e: any) => {
@@ -45,43 +79,30 @@ export default function Login() {
           method="POST"
           onSubmit={loginFunc}
         >
-          <div className="form-wrap">
-            <label htmlFor="email" className="form-label">
-              Email or Username
-            </label>
-            <input
-              className="form-control"
-              type="text"
-              id="email"
-              name="email-username"
-              placeholder="Enter your email or username"
-              value={inputId}
-              onChange={(e) => setInputId(e.target.value)}
-              onKeyUp={changeButton}
-            />
-          </div>
-
-          <div className="form-wrap">
-            <label className="form-label" htmlFor="password">
-              Password
-            </label>
-            <div className="pw-box">
-              <input
-                className="form-control"
-                type="password"
-                id="password"
-                name="password"
-                placeholder="············"
-                aria-describedby="password"
-                value={inputPw}
-                onChange={(e) => setInputPw(e.target.value)}
-                onKeyUp={changeButton}
-              />
-              <span className="pw-icon">
-                <AiOutlineEyeInvisible />
-              </span>
-            </div>
-          </div>
+          <InputBox
+            place="Enter your email or username"
+            type="text"
+            id="email"
+            name="email"
+            value={form.email}
+            onChange={(e: any) => setForm({ ...form, email: e.target.value })}
+            errMsg={ErrMsg.emailMessage}
+          />
+          <InputBox
+            place="············"
+            type="password"
+            id="password"
+            name="password"
+            value={form.password}
+            onChange={(e: any) =>
+              setForm({ ...form, password: e.target.value })
+            }
+            errMsg={ErrMsg.pwMessage}
+          >
+            <span className="pw-icon">
+              <AiOutlineEyeInvisible />
+            </span>
+          </InputBox>
 
           <button className="btn btn-primary" type="submit">
             Sign in
