@@ -41,7 +41,7 @@ export default function PokemonList() {
   }, [isLoading]);
 
   return (
-    <div>
+    <div className="row-w">
       {isLoading ? (
         "Loading..."
       ) : (

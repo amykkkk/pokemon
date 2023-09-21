@@ -1,52 +1,64 @@
 import { useCallback, useEffect, useState } from "react";
 import imgLogo from "../img/logo.png";
-import { AiOutlineEyeInvisible } from "react-icons/ai";
+import { AiOutlineEyeInvisible, AiOutlineEye } from "react-icons/ai";
 import { useNavigate } from "react-router-dom";
 import InputBox from "../components/InputBox";
 
 export default function Login() {
-  const [inputId, setInputId] = useState<string>("");
-  const [inputPw, setInputPw] = useState<string>("");
+  // password type
+  const [showPswd, setShowPswd] = useState<boolean>(false);
+  const [idEnable, setidEnable] = useState<boolean>(true);
+  const [pwEnable, setpwEnable] = useState<boolean>(true);
   const navigate = useNavigate();
 
   // input value
   const [form, setForm] = useState({
-    email: "",
+    id: "",
     password: "",
   });
 
   const [ErrMsg, setErrMsg] = useState({
-    emailMessage: "",
+    idMessage: "",
     pwMessage: "",
   });
 
   useEffect(() => {
     const idReg = /^[A-za-z0-9]{5,15}$/;
-    if (idReg.test(form.email) || form.email === "") {
+    if (idReg.test(form.id)) {
       setErrMsg({
         ...ErrMsg,
-        emailMessage: "",
+        idMessage: "",
       });
+      setidEnable(true);
+    } else if (form.id === "") {
+      setidEnable(false);
     } else {
       setErrMsg({
         ...ErrMsg,
-        emailMessage: "아이디는 영문 또는 숫자로 5~15자 이여야 합니다.",
+        idMessage: "아이디는 영문 또는 숫자로 5~15자 이여야 합니다.",
       });
+      setidEnable(false);
     }
-  }, [form.email]);
+  }, [form.id]);
 
   useEffect(() => {
-    const pwdReg = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
-    if (pwdReg.test(form.password) || form.password === "") {
+    const pwdReg =
+      /^(?=.*[a-zA-z])(?=.*[0-9])(?=.*[$`~!@$!%*#^?&\\(\\)\-_=+]).{8,16}$/;
+    if (pwdReg.test(form.password)) {
       setErrMsg({
         ...ErrMsg,
         pwMessage: "",
       });
+      setpwEnable(true);
+    } else if (form.password === "") {
+      setpwEnable(false);
     } else {
       setErrMsg({
         ...ErrMsg,
-        pwMessage: "비밀번호는 문자 또는 숫자로 8자 이상이여야 합니다.",
+        pwMessage:
+          "비밀번호는 영문, 숫자, 특수문자를 포함한 8~16자 이내여야 합니다.",
       });
+      setpwEnable(false);
     }
   }, [form.password]);
 
@@ -54,16 +66,14 @@ export default function Login() {
   const loginFunc = (e: any) => {
     e.preventDefault();
 
-    if (!inputId.includes("@")) {
-      return alert("idddd");
-    } else if (inputPw.length < 8) {
-      return alert("pwwwww");
-    }
-
-    localStorage.setItem("logininfo", inputId);
+    localStorage.setItem("logininfo", form.id);
     //navigate("/", { replace: true });
     window.location.href = "/";
-    console.log("ID :", inputId, "PW :", inputPw);
+    console.log("ID :", form.id, "PW :", form.password);
+  };
+
+  const toggleShowPswd = () => {
+    setShowPswd(!showPswd);
   };
 
   return (
@@ -80,17 +90,17 @@ export default function Login() {
           onSubmit={loginFunc}
         >
           <InputBox
-            place="Enter your email or username"
+            place="Enter your username"
             type="text"
-            id="email"
-            name="email"
-            value={form.email}
-            onChange={(e: any) => setForm({ ...form, email: e.target.value })}
-            errMsg={ErrMsg.emailMessage}
+            id="id"
+            name="id"
+            value={form.id}
+            onChange={(e: any) => setForm({ ...form, id: e.target.value })}
+            errMsg={ErrMsg.idMessage}
           />
           <InputBox
             place="············"
-            type="password"
+            type={showPswd ? "text" : "password"}
             id="password"
             name="password"
             value={form.password}
@@ -99,12 +109,16 @@ export default function Login() {
             }
             errMsg={ErrMsg.pwMessage}
           >
-            <span className="pw-icon">
-              <AiOutlineEyeInvisible />
+            <span className="pw-icon" onClick={toggleShowPswd}>
+              {showPswd ? <AiOutlineEye /> : <AiOutlineEyeInvisible />}
             </span>
           </InputBox>
 
-          <button className="btn btn-primary" type="submit">
+          <button
+            className="btn btn-primary"
+            type="submit"
+            disabled={idEnable && pwEnable ? false : true}
+          >
             Sign in
           </button>
         </form>
