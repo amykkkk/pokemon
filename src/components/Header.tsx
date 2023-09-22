@@ -1,8 +1,9 @@
-import { useEffect, useState } from "react";
+import { storageState } from "../atom/Atoms";
+import { useRecoilValue, useResetRecoilState } from "recoil";
 import { Link } from "react-router-dom";
+import { AiOutlineLogin, AiOutlineLogout, AiOutlineUser } from "react-icons/ai";
 import { styled } from "styled-components";
 import imgLogo from "../img/logo.png";
-import { AiOutlineLogin, AiOutlineLogout, AiOutlineUser } from "react-icons/ai";
 
 const HeaderWrap = styled.header`
   display: flex;
@@ -38,20 +39,8 @@ const LoginWrap = styled.ul`
 `;
 
 export default function Header() {
-  const [isLogin, setIsLogin] = useState<boolean>(false);
-
-  useEffect(() => {
-    if (localStorage.getItem("logininfo") !== null) {
-      setIsLogin(true);
-    } else {
-      setIsLogin(false);
-    }
-  }, []);
-
-  const logout = () => {
-    localStorage.removeItem("logininfo");
-    setIsLogin(false);
-  };
+  const currentId = useRecoilValue(storageState);
+  const resetId = useResetRecoilState(storageState);
 
   return (
     <HeaderWrap>
@@ -60,18 +49,18 @@ export default function Header() {
           <img src={imgLogo} />
         </Link>
       </h1>
-      {isLogin ? (
+      {currentId ? (
         <LoginWrap>
           <li>
             <Link to={"/"}>
               <span className="icon">
                 <AiOutlineUser />
               </span>
-              {localStorage.getItem("logininfo")}
+              {currentId}
             </Link>
           </li>
           <li>
-            <Link to={"/"} onClick={logout}>
+            <Link to={"/"} onClick={resetId}>
               <span className="icon">
                 <AiOutlineLogout />
               </span>

@@ -1,14 +1,18 @@
-import { useCallback, useEffect, useState } from "react";
-import imgLogo from "../img/logo.png";
-import { AiOutlineEyeInvisible, AiOutlineEye } from "react-icons/ai";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useRecoilState } from "recoil";
+import { storageState } from "../atom/Atoms";
+
+import { AiOutlineEyeInvisible, AiOutlineEye } from "react-icons/ai";
+import imgLogo from "../img/logo.png";
 import InputBox from "../components/InputBox";
 
 export default function Login() {
-  // password type
-  const [showPswd, setShowPswd] = useState<boolean>(false);
-  const [idEnable, setidEnable] = useState<boolean>(true);
-  const [pwEnable, setpwEnable] = useState<boolean>(true);
+  const [showPswd, setShowPswd] = useState<boolean>(false); // password type
+  const [idEnable, setidEnable] = useState<boolean>(true); // id 검사 > btn
+  const [pwEnable, setpwEnable] = useState<boolean>(true); // pw 검사 > btn
+
+  const [CurrentId, setCurrentId] = useRecoilState(storageState);
   const navigate = useNavigate();
 
   // input value
@@ -66,10 +70,8 @@ export default function Login() {
   const loginFunc = (e: any) => {
     e.preventDefault();
 
-    localStorage.setItem("logininfo", form.id);
-    //navigate("/", { replace: true });
-    window.location.href = "/";
-    console.log("ID :", form.id, "PW :", form.password);
+    setCurrentId(form.id);
+    navigate("/", { replace: true });
   };
 
   const toggleShowPswd = () => {
