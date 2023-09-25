@@ -207,7 +207,7 @@ button {
   }
 }
 
-.pw-icon {
+.input-icon {
   cursor: pointer;
   position: absolute;
   top: 2.375rem;
@@ -228,6 +228,32 @@ button {
 .icon {
   display: inline-block;
   vertical-align: middle;
+}
+
+.search-bar {
+  flex: 0 0 50%;
+  label,
+  small {
+    display: none;
+  }
+  .icon {
+    top: 0.6rem;
+    right: 0.6rem;
+    font-size: 1.25rem;
+  }
+  .form-wrap {
+    margin-bottom: 0;
+  }
+}
+.drop-box {
+  flex: 0 0 15%;
+  position: relative;
+
+  .icon {
+    top: 0.735rem;
+    right: 0.6rem;
+    font-size: 1rem;
+  }
 }
 
 @media screen and (max-width: 1440px) {

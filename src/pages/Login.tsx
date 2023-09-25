@@ -111,7 +111,7 @@ export default function Login() {
             }
             errMsg={ErrMsg.pwMessage}
           >
-            <span className="pw-icon" onClick={toggleShowPswd}>
+            <span className="input-icon" onClick={toggleShowPswd}>
               {showPswd ? <AiOutlineEye /> : <AiOutlineEyeInvisible />}
             </span>
           </InputBox>
