@@ -27,11 +27,12 @@ export default function SelectBox(prop: any) {
   return (
     <Select onChange={prop.onChange}>
       <option value="All">All</option>
-      {prop.options.map((type: any) => (
-        <option key={type.name} value={type.name}>
-          {type.name}
-        </option>
-      ))}
+      {prop.options &&
+        prop.options.map((type: any) => (
+          <option key={type.name} value={type.name}>
+            {type.name}
+          </option>
+        ))}
     </Select>
   );
 }
