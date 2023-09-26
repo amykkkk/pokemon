@@ -15,3 +15,7 @@ export const getAll = async (/*{ pageParam = 0 }*/) => {
 export const getInfo = async (num: number | string) => {
   return await axios.get(`${BASE_URL}/pokemon/${num}`).then((res) => res.data);
 };
+
+export const getType = async () => {
+  return await axios.get(`${BASE_URL}/type`).then((res) => res.data.results);
+};

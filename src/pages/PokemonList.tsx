@@ -1,14 +1,15 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { getAll, getInfo } from "../api";
+import { getAll, getInfo, getType } from "../api";
 import { Pokemon } from "../type/types";
 
 import InputBox from "../components/InputBox";
 import PokemonItem from "../components/PokemonItem";
+import SelectBox from "../components/SelectBox";
 
 import styled from "styled-components";
-import { AiOutlineSearch } from "react-icons/ai";
+import { AiFillCaretDown, AiOutlineSearch } from "react-icons/ai";
 
 const ListWrap = styled.ul`
   display: flex;
@@ -34,19 +35,32 @@ const FilterWrap = styled.div`
 
 export default function PokemonList() {
   const [pokemonData, setPokemonData] = useState<Pokemon[]>([]);
-  const { isLoading, data } = useQuery<any>(["allPokemon"], getAll);
+  const { isLoading, data: pokemonList } = useQuery<any>(
+    ["allPokemon"],
+    getAll
+  );
+  const { data: typeData } = useQuery<any>(["allType"], getType);
 
   const [search, setSearch] = useState("");
+  const [typeFilter, setTypeFilter] = useState<any>(["All"]);
   const filterMonster = pokemonData.filter((pokemon) => {
-    return pokemon.name.toLowerCase().includes(search.toLowerCase());
+    if (
+      pokemon.types.some((item: any) => {
+        if (item.type.name === typeFilter) {
+          return true;
+        }
+      }) === true
+    ) {
+      return pokemon.name.toLowerCase().includes(search.toLowerCase());
+    } else if (typeFilter == "All") {
+      return pokemon.name.toLowerCase().includes(search.toLowerCase());
+    }
   });
-
-  console.log(filterMonster);
 
   useEffect(() => {
     async function fetchData() {
       const pokemonAll: any = [];
-      for (let i = 1; i <= data?.length; i++) {
+      for (let i = 1; i <= pokemonList?.length; i++) {
         const response = await getInfo(i);
         pokemonAll.push(response);
       }
@@ -77,12 +91,17 @@ export default function PokemonList() {
           </InputBox>
         </div>
 
-        {/* <div className="drop-box">
-          <SelectBox options={options} />
+        <div className="drop-box">
+          <SelectBox
+            onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
+              setTypeFilter(e.target.value)
+            }
+            options={typeData}
+          />
           <span className="input-icon icon">
             <AiFillCaretDown />
           </span>
-        </div> */}
+        </div>
       </FilterWrap>
       {isLoading ? (
         "Loading..."
