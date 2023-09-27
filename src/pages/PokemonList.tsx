@@ -1,7 +1,7 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { getAll, getInfo, getType } from "../api";
+import { getAll, getType } from "../api";
 import { Pokemon } from "../type/types";
 
 import InputBox from "../components/InputBox";
@@ -35,14 +35,14 @@ const FilterWrap = styled.div`
 
 export default function PokemonList() {
   const [pokemonData, setPokemonData] = useState<Pokemon[]>([]);
+  const [search, setSearch] = useState("");
+  const [typeFilter, setTypeFilter] = useState<any>(["All"]);
   const { isLoading, data: pokemonList } = useQuery<any>(
     ["allPokemon"],
     getAll
   );
   const { data: typeData } = useQuery<any>(["allType"], getType);
 
-  const [search, setSearch] = useState("");
-  const [typeFilter, setTypeFilter] = useState<any>(["All"]);
   const filterMonster = pokemonData.filter((pokemon) => {
     if (
       pokemon.types.some((item: any) => {
@@ -60,8 +60,10 @@ export default function PokemonList() {
   useEffect(() => {
     async function fetchData() {
       const pokemonAll: any = [];
-      for (let i = 1; i <= pokemonList?.length; i++) {
-        const response = await getInfo(i);
+      for (let i = 0; i < pokemonList?.length; i++) {
+        const response = await axios
+          .get(pokemonList[i].url)
+          .then((res) => res.data);
         pokemonAll.push(response);
       }
       setPokemonData(pokemonAll);

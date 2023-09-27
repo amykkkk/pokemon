@@ -1,6 +1,8 @@
 import { useParams, Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { getInfo } from "../api";
+import EvoItem from "../components/EvoItem";
+
 import "../App.scss";
 import { styled } from "styled-components";
 
@@ -70,7 +72,9 @@ export default function PokemonDetails() {
             </div>
           </section>
           <section id="evolution">
-            <div className="cont row-w"></div>
+            <div className="cont row-w">
+              <EvoItem pokemon={pokemonInfo} />
+            </div>
           </section>
         </>
       )}

@@ -256,6 +256,12 @@ button {
   }
 }
 
+#evolution {
+  .cont {
+    flex-wrap: wrap;
+  }
+}
+
 @media screen and (max-width: 1440px) {
   /* content */
   .row-w {
