@@ -72,7 +72,7 @@ export default function PokemonDetails() {
             </div>
           </section>
           <section id="evolution">
-            <div className="cont row-w">
+            <div className="row-w">
               <EvoItem pokemon={pokemonInfo} />
             </div>
           </section>
