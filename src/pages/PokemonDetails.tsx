@@ -15,10 +15,11 @@ const List = styled.div`
   background: #393939;
   color: white;
   padding: 1rem 1rem 3rem;
-  margin-bottom: -5rem;
+  margin-bottom: -2.5rem;
 
   svg {
     vertical-align: middle;
+    cursor: pointer;
   }
 `;
 

@@ -3,7 +3,7 @@ import { useRecoilValue, useResetRecoilState } from "recoil";
 import { Link } from "react-router-dom";
 import { AiOutlineLogin, AiOutlineLogout, AiOutlineUser } from "react-icons/ai";
 import { styled } from "styled-components";
-import imgLogo from "../img/logo.png";
+import imgLogo from "../assets/logo.png";
 
 const HeaderWrap = styled.header`
   display: flex;

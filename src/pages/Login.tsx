@@ -4,7 +4,7 @@ import { useRecoilState } from "recoil";
 import { storageState } from "../atom/Atoms";
 
 import { AiOutlineEyeInvisible, AiOutlineEye } from "react-icons/ai";
-import imgLogo from "../img/logo.png";
+import imgLogo from "../assets/logo.png";
 import InputBox from "../components/InputBox";
 
 export default function Login() {

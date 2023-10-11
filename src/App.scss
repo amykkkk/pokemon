@@ -81,6 +81,10 @@ section {
   width: 100%;
   position: relative;
   width: 100%;
+
+  &#main-cont {
+    padding-top: 0;
+  }
 }
 .cont {
   display: flex;
