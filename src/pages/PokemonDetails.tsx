@@ -80,11 +80,11 @@ export default function PokemonDetails() {
                       "front_default"
                     ]
                   }
-                  alt={name}
+                  alt={pokemonInfo.name}
                 />
               </ContBox>
               <ContBox>
-                <h2 className="title">{name}</h2>
+                <h2 className="title">{pokemonInfo.name}</h2>
                 <InfoTable>
                   <tbody>
                     <tr>

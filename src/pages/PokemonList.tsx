@@ -1,8 +1,8 @@
-import axios from "axios";
-import { useEffect, useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useState } from "react";
+import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import { getAll, getType } from "../api";
 import { Pokemon } from "../type/types";
+import { useObserver } from "../hooks/useObserver";
 
 import InputBox from "../components/InputBox";
 import PokemonItem from "../components/PokemonItem";
@@ -14,8 +14,6 @@ import { AiFillCaretDown, AiOutlineSearch } from "react-icons/ai";
 const ListWrap = styled.ul`
   display: flex;
   flex-wrap: wrap;
-
-  margin: 2rem auto;
 
   > li {
     width: calc((100% - 4rem) / 5);
@@ -30,19 +28,46 @@ const ListWrap = styled.ul`
 const FilterWrap = styled.div`
   display: flex;
   justify-content: space-between;
-  margin-top: 2rem;
+  margin: 2rem 0;
+`;
+const Target = styled.div`
+  height: 10px;
 `;
 
 export default function PokemonList() {
   const [pokemonData, setPokemonData] = useState<Pokemon[]>([]);
   const [search, setSearch] = useState("");
   const [typeFilter, setTypeFilter] = useState<any>(["All"]);
-  const { isLoading, data: pokemonList } = useQuery<any>(
-    ["allPokemon"],
-    getAll
-  );
-  const { data: typeData } = useQuery<any>(["allType"], getType);
 
+  const {
+    data: AllpokemonList, // data.pages를 갖고 있는 배열
+    error, // error 객체
+    fetchNextPage, //  다음 페이지를 불러오는 함수
+    hasNextPage, // 다음 페이지가 있는지 여부, Boolean
+    isFetchingNextPage, // 추가 페이지 fetching 여부, Boolean
+    status, // 💡 loading, error, success 중 하나의 상태, string
+  } = useInfiniteQuery<any>(
+    ["allPokemon"],
+    ({ pageParam = 0 }) => getAll(pageParam),
+    {
+      getNextPageParam: (lastPage, Allpages) => {
+        console.log("getNextPageParam", lastPage, Allpages);
+        const { next } = lastPage;
+        if (!next) return false;
+        return Number(new URL(next).searchParams.get("offset"));
+      },
+    }
+  );
+
+  console.log(AllpokemonList);
+
+  // 무한 스크롤
+  const { setTarget } = useObserver({
+    hasNextPage,
+    fetchNextPage,
+  });
+
+  const { data: typeData } = useQuery<any>(["allType"], getType);
   const filterMonster = pokemonData.filter((pokemon) => {
     if (
       pokemon.types.some((item: any) => {
@@ -56,21 +81,6 @@ export default function PokemonList() {
       return pokemon.name.toLowerCase().includes(search.toLowerCase());
     }
   });
-
-  useEffect(() => {
-    async function fetchData() {
-      const pokemonAll: any = [];
-      for (let i = 0; i < pokemonList?.length; i++) {
-        const response = await axios
-          .get(pokemonList[i].url)
-          .then((res) => res.data);
-        pokemonAll.push(response);
-      }
-      setPokemonData(pokemonAll);
-    }
-
-    fetchData();
-  }, [isLoading]);
 
   return (
     <div className="row-w">
@@ -105,22 +115,28 @@ export default function PokemonList() {
           </span>
         </div>
       </FilterWrap>
-      {isLoading ? (
-        "Loading..."
+
+      {status === "loading" ? (
+        "Loading,,,"
+      ) : status === "error" ? (
+        <p>
+          Error:
+          {/* {error?.message} */}
+        </p>
       ) : (
-        <ListWrap>
-          {filterMonster.map((pokemon: Pokemon, index: number) => (
-            <li key={index}>
-              <PokemonItem
-                id={pokemon.id}
-                name={pokemon.name}
-                sprites={pokemon.sprites}
-                types={pokemon.types}
-              />
-            </li>
-          ))}
-        </ListWrap>
+        AllpokemonList?.pages.map((group: any, index: any) => (
+          <ListWrap key={index}>
+            {group.results.map((pokemon: any) => (
+              <li key={pokemon.name}>
+                <PokemonItem name={pokemon.name} url={pokemon.url} />
+              </li>
+            ))}
+          </ListWrap>
+        ))
       )}
+
+      <Target ref={setTarget} />
+      {isFetchingNextPage && <p>Loading,,,</p>}
     </div>
   );
 }

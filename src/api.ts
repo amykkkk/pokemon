@@ -3,13 +3,18 @@ import { Pokemon } from "./type/types";
 
 const BASE_URL = `https://pokeapi.co/api/v2`;
 
-const OFFSET = 20;
-export const getAll = async (/*{ pageParam = 0 }*/) => {
+export async function fetchFn(endpoint: string) {
+  const response = await fetch(endpoint);
+  return response.json();
+}
+
+const OFFSET = 30;
+export const getAll = async (page: number) => {
   return await axios
     .get(`${BASE_URL}/pokemon`, {
-      params: { /*offeset: pageParam,*/ limit: OFFSET },
+      params: { offset: page, limit: OFFSET },
     })
-    .then((res) => res.data.results);
+    .then((res) => res.data);
 };
 
 export const getInfo = async (num: number | string) => {

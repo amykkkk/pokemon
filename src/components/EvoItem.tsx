@@ -59,7 +59,8 @@ export default function EvoItem({ pokemon }: any) {
   const getNextEvolution = () => {
     if (
       currentEvolution.length === 0 ||
-      currentEvolution.evolves_to.length === 0
+      currentEvolution.evolves_to.length === 0 ||
+      currentEvolution.evolves_to[0].evolves_to.length === 0
     )
       return null;
 
@@ -93,45 +94,48 @@ export default function EvoItem({ pokemon }: any) {
 
   return (
     <>
-      {evoChain.length === 0 && <h4> This pokemon doesn't evolove</h4>}
-      <EvoWrap>
-        <li className="evo-box">
-          <Link to={`/${evoChain.baby}`}>
-            <div className="pokeball">
-              <img alt={evoChain.baby} src={evoChain.babyImage} />
-            </div>
-            <p>{evoChain.baby}</p>
-          </Link>
-        </li>
-        <li className="trigger">
-          <span className="icon">
-            <PiArrowFatLinesRightBold />
-          </span>
-          Lvl {evoChain.level}
-        </li>
-        <li className="evo-box">
-          <Link to={`/${evoChain.next}`}>
-            <div className="pokeball">
-              <img alt={evoChain.next} src={evoChain.nextImage} />
-            </div>
-            <p>{evoChain.next}</p>
-          </Link>
-        </li>
-        <li className="trigger">
-          <span className="icon">
-            <PiArrowFatLinesRightBold />
-          </span>
-          Lvl {evoChain.level2}
-        </li>
-        <li className="evo-box">
-          <Link to={`/${evoChain.final}`}>
-            <div className="pokeball">
-              <img alt={evoChain.final} src={evoChain.finalImage} />
-            </div>
-            <p>{evoChain.final}</p>
-          </Link>
-        </li>
-      </EvoWrap>
+      {evoChain.length === 0 ? (
+        <h4> This pokemon doesn't evolove</h4>
+      ) : (
+        <EvoWrap>
+          <li className="evo-box">
+            <Link to={`/${evoChain.baby}`}>
+              <div className="pokeball">
+                <img alt={evoChain.baby} src={evoChain.babyImage} />
+              </div>
+              <p>{evoChain.baby}</p>
+            </Link>
+          </li>
+          <li className="trigger">
+            <span className="icon">
+              <PiArrowFatLinesRightBold />
+            </span>
+            Lvl {evoChain.level}
+          </li>
+          <li className="evo-box">
+            <Link to={`/${evoChain.next}`}>
+              <div className="pokeball">
+                <img alt={evoChain.next} src={evoChain.nextImage} />
+              </div>
+              <p>{evoChain.next}</p>
+            </Link>
+          </li>
+          <li className="trigger">
+            <span className="icon">
+              <PiArrowFatLinesRightBold />
+            </span>
+            Lvl {evoChain.level2}
+          </li>
+          <li className="evo-box">
+            <Link to={`/${evoChain.final}`}>
+              <div className="pokeball">
+                <img alt={evoChain.final} src={evoChain.finalImage} />
+              </div>
+              <p>{evoChain.final}</p>
+            </Link>
+          </li>
+        </EvoWrap>
+      )}
     </>
   );
 }

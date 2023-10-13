@@ -1,11 +1,24 @@
+export interface PokemonList {
+  url: string;
+  name: string;
+}
+
 export interface Pokemon {
   id: number;
   name: string;
+  url: string;
   sprites: {
-    back_default: string;
-    back_shiny: string;
     front_default: string;
-    front_shiny: string;
+    other: {
+      "official-artwork": {
+        front_default: string;
+      };
+    };
   };
-  types: any;
+  types: [
+    slot: number,
+    type: {
+      name: string;
+    }
+  ];
 }
