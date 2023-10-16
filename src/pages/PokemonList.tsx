@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import { getAll, getType } from "../api";
 import { Pokemon } from "../type/types";
@@ -35,9 +35,9 @@ const Target = styled.div`
 `;
 
 export default function PokemonList() {
-  const [pokemonData, setPokemonData] = useState<Pokemon[]>([]);
+  const [pokemonData, setPokemonData] = useState<any>([]);
   const [search, setSearch] = useState("");
-  const [typeFilter, setTypeFilter] = useState<any>(["All"]);
+  const [typeFilter, setTypeFilter] = useState<any>("All");
 
   const {
     data: AllpokemonList, // data.pages를 갖고 있는 배열
@@ -47,40 +47,33 @@ export default function PokemonList() {
     isFetchingNextPage, // 추가 페이지 fetching 여부, Boolean
     status, // 💡 loading, error, success 중 하나의 상태, string
   } = useInfiniteQuery<any>(
-    ["allPokemon"],
+    ["allPokemon", search],
     ({ pageParam = 0 }) => getAll(pageParam),
     {
-      getNextPageParam: (lastPage, Allpages) => {
-        console.log("getNextPageParam", lastPage, Allpages);
+      getNextPageParam: (lastPage) => {
         const { next } = lastPage;
         if (!next) return false;
         return Number(new URL(next).searchParams.get("offset"));
       },
+      // select: search !== null ? selectFn : undefined,
+      select: (data) => ({
+        pages: data.pages.flatMap((page) => page.results),
+      }),
     }
   );
 
-  console.log(AllpokemonList);
-
-  // 무한 스크롤
+  /* 무한 스크롤 */
   const { setTarget } = useObserver({
     hasNextPage,
     fetchNextPage,
   });
 
+  /* 필터링 함수 */
   const { data: typeData } = useQuery<any>(["allType"], getType);
-  const filterMonster = pokemonData.filter((pokemon) => {
-    if (
-      pokemon.types.some((item: any) => {
-        if (item.type.name === typeFilter) {
-          return true;
-        }
-      }) === true
-    ) {
-      return pokemon.name.toLowerCase().includes(search.toLowerCase());
-    } else if (typeFilter == "All") {
-      return pokemon.name.toLowerCase().includes(search.toLowerCase());
-    }
+  const filterData = AllpokemonList?.pages.filter((pokemon: any) => {
+    return pokemon.name.toLowerCase().includes(search.toLowerCase());
   });
+  console.log(filterData);
 
   return (
     <div className="row-w">
@@ -118,25 +111,17 @@ export default function PokemonList() {
 
       {status === "loading" ? (
         "Loading,,,"
-      ) : status === "error" ? (
-        <p>
-          Error:
-          {/* {error?.message} */}
-        </p>
       ) : (
-        AllpokemonList?.pages.map((group: any, index: any) => (
-          <ListWrap key={index}>
-            {group.results.map((pokemon: any) => (
-              <li key={pokemon.name}>
-                <PokemonItem name={pokemon.name} url={pokemon.url} />
-              </li>
-            ))}
-          </ListWrap>
-        ))
+        <ListWrap>
+          {filterData?.map((group: any, index: any) => (
+            <li key={index}>
+              <PokemonItem name={group.name} url={group.url} />
+            </li>
+          ))}
+        </ListWrap>
       )}
-
-      <Target ref={setTarget} />
       {isFetchingNextPage && <p>Loading,,,</p>}
+      <Target ref={setTarget} />
     </div>
   );
 }
