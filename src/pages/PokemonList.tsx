@@ -10,6 +10,7 @@ import SelectBox from "../components/SelectBox";
 
 import styled from "styled-components";
 import { AiFillCaretDown, AiOutlineSearch } from "react-icons/ai";
+import Loading from "../components/Loading";
 
 const ListWrap = styled.ul`
   display: flex;
@@ -31,7 +32,7 @@ const FilterWrap = styled.div`
   margin: 2rem 0;
 `;
 const Target = styled.div`
-  height: 10px;
+  height: 1px;
 `;
 
 export default function PokemonList() {
@@ -120,7 +121,7 @@ export default function PokemonList() {
       </FilterWrap>
 
       {status === "loading" ? (
-        "Loading,,,"
+        <Loading />
       ) : (
         <ListWrap>
           {filterData?.map((group: any, index: any) => (
@@ -130,7 +131,7 @@ export default function PokemonList() {
           ))}
         </ListWrap>
       )}
-      {isFetchingNextPage && <p>Loading,,,</p>}
+      {isFetchingNextPage && <Loading />}
       <Target ref={setTarget} />
     </div>
   );

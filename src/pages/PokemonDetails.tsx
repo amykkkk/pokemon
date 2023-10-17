@@ -3,12 +3,11 @@ import { useQuery } from "@tanstack/react-query";
 import { getInfo } from "../api";
 import EvoItem from "../components/EvoItem";
 import Process from "../components/Process";
+import Loading from "../components/Loading";
 
 import "../App.scss";
 import { styled } from "styled-components";
 import { PiCaretCircleLeftBold } from "react-icons/pi";
-
-const Loder = styled.div``;
 
 const List = styled.div`
   font-size: 2rem;
@@ -65,7 +64,7 @@ export default function PokemonDetails() {
   return (
     <div>
       {isLoading ? (
-        <Loder>Loading...</Loder>
+        <Loading />
       ) : (
         <>
           <List onClick={() => navigate(-1)}>
