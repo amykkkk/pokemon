@@ -26,13 +26,10 @@ const Select = styled.select`
 export default function SelectBox(prop: any) {
   return (
     <Select onChange={prop.onChange}>
-      <option value="All">All</option>
-      {prop.options &&
-        prop.options.map((type: any) => (
-          <option key={type.name} value={type.name}>
-            {type.name}
-          </option>
-        ))}
+      <option value="sortByLowId">Lowest Num</option>
+      <option value="sortByHighId">Highest Num</option>
+      <option value="sortByLowName">A - Z</option>
+      <option value="sortByHighName">Z - A</option>
     </Select>
   );
 }

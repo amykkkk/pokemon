@@ -1,6 +1,6 @@
-import { useCallback, useEffect, useState } from "react";
-import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
-import { getAll, getType } from "../api";
+import { useState } from "react";
+import { useInfiniteQuery } from "@tanstack/react-query";
+import { getAll } from "../api";
 import { Pokemon } from "../type/types";
 import { useObserver } from "../hooks/useObserver";
 
@@ -35,13 +35,11 @@ const Target = styled.div`
 `;
 
 export default function PokemonList() {
-  const [pokemonData, setPokemonData] = useState<any>([]);
   const [search, setSearch] = useState("");
-  const [typeFilter, setTypeFilter] = useState<any>("All");
+  const [typeFilter, setTypeFilter] = useState<any>("");
 
   const {
     data: AllpokemonList, // data.pages를 갖고 있는 배열
-    error, // error 객체
     fetchNextPage, //  다음 페이지를 불러오는 함수
     hasNextPage, // 다음 페이지가 있는지 여부, Boolean
     isFetchingNextPage, // 추가 페이지 fetching 여부, Boolean
@@ -55,9 +53,9 @@ export default function PokemonList() {
         if (!next) return false;
         return Number(new URL(next).searchParams.get("offset"));
       },
-      // select: search !== null ? selectFn : undefined,
       select: (data) => ({
         pages: data.pages.flatMap((page) => page.results),
+        pageParams: data.pageParams,
       }),
     }
   );
@@ -69,11 +67,24 @@ export default function PokemonList() {
   });
 
   /* 필터링 함수 */
-  const { data: typeData } = useQuery<any>(["allType"], getType);
   const filterData = AllpokemonList?.pages.filter((pokemon: any) => {
     return pokemon.name.toLowerCase().includes(search.toLowerCase());
   });
-  console.log(filterData);
+
+  const sortData = () => {
+    if (typeFilter === "sortByHighId") {
+      return filterData?.sort().reverse();
+    } else if (typeFilter === "sortByLowName") {
+      return filterData?.sort((a: any, b: any) =>
+        a.name < b.name ? -1 : a.name > b.name ? 1 : 0
+      );
+    } else if (typeFilter === "sortByHighName") {
+      return filterData?.sort((a: any, b: any) =>
+        a.name < b.name ? 1 : a.name > b.name ? -1 : 0
+      );
+    }
+  };
+  sortData();
 
   return (
     <div className="row-w">
@@ -101,7 +112,6 @@ export default function PokemonList() {
             onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
               setTypeFilter(e.target.value)
             }
-            options={typeData}
           />
           <span className="input-icon icon">
             <AiFillCaretDown />
