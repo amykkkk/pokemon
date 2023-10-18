@@ -2,7 +2,7 @@ import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import { styled } from "styled-components";
 
 const Loder = styled.div`
-  position: absolute;
+  position: fixed;
   top: 0;
   left: 0;
   display: flex;
