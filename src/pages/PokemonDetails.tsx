@@ -27,6 +27,7 @@ const ContBox = styled.div`
   max-width: 50%;
   &.img {
     flex: 0 0 45%;
+    max-width: 475px;
   }
 `;
 const InfoTable = styled.table`

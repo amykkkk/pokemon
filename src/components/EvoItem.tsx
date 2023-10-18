@@ -51,7 +51,6 @@ const EvoWrap = styled.ul`
 
 export default function EvoItem({ pokemon }: any) {
   const [currentEvolution, setCurrentEvolution] = useState<any>([]);
-  const [evoChain, setEvoChain] = useState<any>([]);
 
   useEffect(() => {
     getEvo(pokemon.id).then((data) => {
@@ -120,9 +119,16 @@ export default function EvoItem({ pokemon }: any) {
                       <span className="icon">
                         <PiArrowFatLinesRightBold />
                       </span>
-                      {`Lvl ${currentEvolution.evolves_to[0].evolves_to[0].evolution_details[0].min_level}`}
+                      {currentEvolution.evolves_to[0].evolves_to[0]
+                        .evolution_details[0].trigger.name === "use-item"
+                        ? currentEvolution.evolves_to[0].evolves_to[0]
+                            .evolution_details[0].item.name
+                        : `Lvl ${currentEvolution.evolves_to[0].evolves_to[0].evolution_details[0].min_level}`}
                     </p>
-                    <Link to={`/${evoChain.final}`} className="evo-box">
+                    <Link
+                      to={`/${currentEvolution.evolves_to[0].evolves_to[0].species.name}`}
+                      className="evo-box"
+                    >
                       <div className="pokeball">
                         <img
                           alt={
